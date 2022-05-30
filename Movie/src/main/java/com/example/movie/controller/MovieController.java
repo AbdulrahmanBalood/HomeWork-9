@@ -4,6 +4,7 @@ import com.example.movie.model.Movie;
 import com.example.movie.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,12 +19,18 @@ public class MovieController {
         return ResponseEntity.status(200).body(movieService.getMovies());
     }
     @PostMapping
-    public ResponseEntity addMovie(@RequestBody @Valid Movie movie){
+    public ResponseEntity addMovie(@RequestBody @Valid Movie movie, Errors errors){
+        if(errors.hasErrors()){
+            return ResponseEntity.status(400).body(errors.getFieldError().getDefaultMessage());
+        }
         movieService.addMovie(movie);
         return ResponseEntity.status(201).body("Movie added");
     }
     @PutMapping
-    public ResponseEntity updateMovie(@RequestBody @Valid Movie movie){
+    public ResponseEntity updateMovie(@RequestBody @Valid Movie movie,Errors errors){
+        if(errors.hasErrors()){
+            return ResponseEntity.status(400).body(errors.getFieldError().getDefaultMessage());
+        }
         movieService.updateMovie(movie);
         return ResponseEntity.status(200).body("Movie updated");
     }
